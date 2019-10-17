@@ -3,8 +3,8 @@
 set -e
 
 base_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-github="git@github.com:CoderDojo/"
-# github="https://github.com/CoderDojo/"
+#github="git@github.com:CoderDojo/"
+ github="https://github.com/CoderDojo/"
 workspace="workspace-zen"
 
 cd "${base_dir}/${workspace}" || (echo "Couldn't access ${base_dir}/${workspace}" && exit)

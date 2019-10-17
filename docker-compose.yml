@@ -1,13 +1,5 @@
 version: '3.3'
 services:
-  db:
-    build: ./cd-db
-    restart: always
-    volumes:
-      - pg-data:/data/postgres
-      - ./cd-db/dumps:/db
-    environment:
-      - POSTGRES_PASSWORD=QdYx3D5y
   kue:
     image: redis:3-alpine
     restart: always
@@ -39,7 +31,7 @@ services:
       - EVENTS_SERVICE=events-service
       - EMAIL_SERVICE=email
       - NODE_ENV=development
-      - MAILDEV_ENABLED=true
+      - MAILDEV_ENABLED=false
     volumes:
       - ./workspace-zen/cp-zen-platform:/usr/src/app:Z
       - ./workspace-zen/cp-zen-frontend:/usr/src/app/node_modules/cp-zen-frontend:ro
@@ -67,10 +59,9 @@ services:
       - POSTGRES_HOST=db
       - KUE_REQUIRED='true'
       - KUE_HOST=kue
-      - GOOGLE_MAPS_KEY=AIzaSyBA4xICXGjxFVQRBTBM7Wo_6d0pfaG7-Us
-      - MAILDEV_ENABLED=true
+      - GOOGLE_MAPS_KEY=AIzaSyD8o-96eWjZmmQnSpKMMPXR93ycx4XafIw
+      - MAILDEV_ENABLED=false
     depends_on:
-      - db
       - kue
     volumes:
       - ./workspace-zen/cp-dojos-service:/usr/src/app:Z
@@ -86,10 +77,10 @@ services:
       - CD_EVENTS=events
       - CD_BADGES=badges
       - POSTGRES_HOST=db
-      - CDF_ADMINS=admin@coderdojo.org,daniel@coderdojo.org
-      - MAILDEV_ENABLED=true
-    depends_on:
-      - db
+      - CDF_ADMINS=oana.vasilache@coderdojo.ro
+      - MAILDEV_ENABLED=false
+      - MAIL_USER=no_reply@coderdojo.ro
+      - MAIL_PASS=tAi4GVEDYCioLQpq
     volumes:
       - ./workspace-zen/cp-users-service:/usr/src/app:Z
       - ./workspace-zen/cp-translations:/usr/src/app/node_modules/cp-translations:ro
@@ -107,7 +98,6 @@ services:
       - KUE_REQUIRED='true'
       - KUE_HOST=kue
     depends_on:
-      - db
       - kue
     volumes:
       - ./workspace-zen/cp-events-service:/usr/src/app:Z
@@ -145,8 +135,6 @@ services:
       - CD_USERS=users
       - NODE_ENV=development
       - POSTGRES_HOST=db
-    depends_on:
-      - db
     volumes:
       - ./workspace-zen/cp-organisations-service:/usr/src/app:Z
       - ./workspace-zen/cp-translations:/usr/src/app/node_modules/cp-translations:ro
@@ -154,8 +142,6 @@ services:
     image: node:carbon
     command: yarn dev
     working_dir: /usr/src/app
-    depends_on:
-      - db
     volumes:
       - ./workspace-zen/services/events-service:/usr/src/app:Z
   maildev:
@@ -168,13 +154,21 @@ services:
     working_dir: /usr/src/app
     environment:
       - URL_BASE=http://localhost:8000
-      - EMAIL_DEFAULT_FROM='The CoderDojo Team <info@coderdojo.org>'
+      - EMAIL_DEFAULT_FROM=no-reply@easybill.ro
       - MICROSERVICE_PORT=3000
-      - TRANSPORT=smtp
-      - SMTP_HOST=maildev
+      - TRANSPORT=ses
+      - SMTP_HOST=email-smtp.eu-west-1.amazonaws.com
       - TEMPLATES_DIR=/usr/src/app/node_modules/cp-translations/email-templates
-      - SMTP_SECURE=false
+      - SMTP_SECURE=true
       - SMTP_PORT=25
+      - SMTP_USER=AKIAIWHNOA4LVUESGLJA
+      - SMTP_PASS=AoRNfAoim7TyNkHca1CowLNTgaVA9H635ZMej6LJEVtJ
+      - AWS_KEY=AKIAIMQNTXJJNYZBRFUA
+      - AWS_SECRET=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
+      - AWS_REGION=eu-west-1
+      - MAIL_USER=AKIAIWHNOA4LVUESGLJA
+      - MAIL_PASS=AoRNfAoim7TyNkHca1CowLNTgaVA9H635ZMej6LJEVtJ
+
     volumes:
       - ./workspace-zen/services/cp-email-service:/usr/src/app:Z
       - ./workspace-zen/cp-translations:/usr/src/app/node_modules/cp-translations:ro
