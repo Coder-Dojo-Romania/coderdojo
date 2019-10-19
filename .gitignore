@@ -68,7 +68,8 @@ typings/
 
 # dotenv environment variables file
 .env
-
+.yml
+*.yml
 # next.js build output
 .next
 >>>>>>> db274c4b039e5c30b7abb782d587f505b689435c
